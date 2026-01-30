@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Chat Bot - COPD Prediction System</title>
+  <meta name="description" content="COPD Prediction System">
+  <meta name="keywords" content="COPD, Health, Prediction, Disease">
+
+  <link href="{% static 'img/favicon.png' %}" rel="icon">
+  <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url("{% static 'img/copdbg5.jpg' %}") no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .chat-container {
+      width: 400px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      margin: 100px auto;
+    }
+
+    .chat-box {
+      height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .message {
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 5px;
+    }
+
+    .user-message {
+      background: #d1e7dd;
+      text-align: right;
+    }
+
+    .bot-message {
+      background: #e2e3e5;
+    }
+
+    .input-area {
+      display: flex;
+      margin-top: 10px;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 8px;
+    }
+
+    .input-area button {
+      padding: 8px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .bot-message button {
+      background-color: #28a745;
+      border: none;
+      padding: 6px 12px;
+      color: white;
+      margin-top: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .bot-message a {
+      display: block;
+      color: #007bff;
+      margin-top: 5px;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center light-background sticky-top">
+    <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+        <h1 class="sitename">COPD Prediction System</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="{% url 'register_doctor' %}">Prediction</a></li>
+          <li><a href="{% url 'chatbot' %}">Chat Bot</a></li>
+          <li><a href="{% url 'doctor' %}">Doctors</a></li>
+          <li><a href="{% url 'about' %}">About</a></li>
+          <li><a href="{% url 'contact' %}">Contact</a></li>
+          <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="chat-container">
+      <div class="chat-box" id="chatBox">
+        <div class="bot-message message">How can I help you?</div>
+      </div>
+
+      <div class="input-area">
+        <input type="text" id="userInput" placeholder="Type here...">
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </main>
+
+  <footer id="footer" class="footer light-background">
+
+    <div class="container">
+      <div class="copyright text-center ">
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">COPD Prediction System</strong> <span>All Rights Reserved</span></p>
+      </div>
+      <div class="social-links d-flex justify-content-center">
+        <a href=""><i class="bi bi-twitter-x"></i></a>
+        <a href=""><i class="bi bi-facebook"></i></a>
+        <a href=""><i class="bi bi-instagram"></i></a>
+        <a href=""><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="credits">
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> Distributed by <a href="https://themewagon.com">ThemeWagon</a>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+    <i class="bi bi-arrow-up-short"></i>
+  </a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+<script>
+    let step = 0;
+    let userName = "";
+    let userAge = "";
+    let userResult = "";
+    let userSmoker = "";
+    let userDisease = "";
+
+    function sendMessage() {
+        let inputField = document.getElementById("userInput");
+        let userText = inputField.value.trim();
+        if (userText === "") return;
+
+        let chatBox = document.getElementById("chatBox");
+        chatBox.innerHTML += `<div class='user-message message'>${userText}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+        inputField.value = "";
+
+        setTimeout(() => {
+            if (step === 0) {
+                handleGeneralChats(userText);
+            } else if (step === 1) {
+                userName = userText;
+                botReply(`Nice to meet you, ${userName}! How old are you?`);
+                step++;
+            } else if (step === 2) {
+                userAge = userText;
+                botReply(`What is your COPD result? (e.g., High Risk, Low Risk, Normal)`);
+                step++;
+            } else if (step === 3) {
+                userResult = userText;
+                botReply(`Are you a smoker? (Yes/No)`);
+                step++;
+            } else if (step === 4) {
+                userSmoker = userText;
+                botReply(`Do you have any existing diseases? (Yes/No)`);
+                step++;
+            } else if (step === 5) {
+                userDisease = userText;
+                botReply(`Would you like to book an appointment with a doctor? (Yes/No)`);
+                step++;
+            } else if (step === 6) {
+                if (userText.toLowerCase() === "yes") {
+                    botReply(`Redirecting you to the appointment booking page...`);
+                    setTimeout(() => {
+                        window.location.href = "/book-appointment/";
+                    }, 2000);
+                } else {
+                    showDoctorNamesOnly();
+                }
+            }
+        }, 1000);
+    }
+
+    function botReply(botText) {
+        let chatBox = document.getElementById("chatBox");
+        chatBox.innerHTML += `<div class='bot-message message'>${botText}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function handleGeneralChats(userText) {
+        let responses = {
+            "hi": "Hello! What is your name?",
+            "hello": "Hi there! What is your name?",
+            "how are you": "I'm here to help! What is your name?",
+            "good morning": "Good morning! What is your name?",
+            "good night": "Good night! What is your name?"
+        };
+        let response = responses[userText.toLowerCase()] || "I'm here to assist you! What is your name?";
+        botReply(response);
+        step = 1;
+    }
+
+    function showDoctorNamesOnly() {
+        botReply("Here are the available doctors:");
+        fetch("/api/doctors/")
+            .then(response => response.json())
+            .then(doctors => {
+                let doctorNames = doctors.map(doctor => `Dr. ${doctor.name}`).join(", ");
+                botReply(doctorNames || "No doctors available at the moment.");
+            })
+            .catch(error => {
+                botReply("Error fetching doctors. Please try again.");
+            });
+    }
+</script>
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'vendor/waypoints/noframework.waypoints.js' %}"></script>
+  <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+  <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
+  <script src="{% static 'vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+
+  
+
+
+</body>
+</html>

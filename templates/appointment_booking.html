@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Booking Appointment
+{% endblock %}
+
+{% block content %}
+    <style>
+        /* Body Styling */
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: url("{% static 'img/lungs.png' %}") no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container Styling */
+        .container {
+            background: rgba(255, 255, 255, 0.9); /* Increased transparency for better contrast */
+            padding: 40px;
+            width: 41%;
+            margin: auto;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); /* Soft, deep shadow */
+            color: #333;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .container:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); /* Enhanced hover effect */
+        }
+
+        /* Title Styling */
+        .container h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px; /* Increased letter spacing for a more spacious feel */
+        }
+
+        /* Input and Select Styling */
+        input, select {
+            width: 90%;
+            padding: 18px;
+            margin: 15px 0;
+            border-radius: 25px;
+            border: 2px solid #ddd;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #f7f7f7;
+            box-sizing: border-box;
+        }
+
+        /* Input Focus Styling */
+        input:focus, select:focus {
+            border-color: #007bff;
+            background-color: #fff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+            outline: none;
+        }
+
+        /* Button Styling */
+        button {
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        /* Button Hover Effect */
+        button:hover {
+            background: linear-gradient(135deg, #0056b3, #0090d9);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px); /* Slight lift effect */
+        }
+
+        /* Active Button State */
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Response Message */
+        p#responseMessage {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        p#responseMessage.success {
+            color: #28a745; /* Success green */
+            background-color: rgba(40, 167, 69, 0.1);
+        }
+
+        p#responseMessage.error {
+            color: #dc3545; /* Error red */
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 80%;
+                padding: 25px;
+            }
+
+            .container h2 {
+                font-size: 30px;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <h2>Book an Appointment</h2>
+        <form id="appointmentForm">
+            <input type="text" id="name" name="name" placeholder="Enter Your Name" required>
+            <input type="number" id="age" name="age" placeholder="Enter Your Age" required>
+
+            <select id="doctor" name="doctor" required>
+                <option value="">Select Doctor</option>
+                {% for doctor in doctors %}
+                    <option value="{{ doctor.id }}">{{ doctor.name }} - {{ doctor.department }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="date" id="date" name="date" required>
+            <input type="time" id="time" name="time" required>
+            <input type="email" name="email" placeholder="Your Email" required>
+
+            <button type="submit">Book Appointment</button>
+        </form>
+
+        <p id="responseMessage"></p>
+    </div>
+
+    <script>
+        document.getElementById("appointmentForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let formData = new FormData(this);
+            fetch("{% url 'book_appointment' %}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                let messageElement = document.getElementById("responseMessage");
+                messageElement.innerText = data.message || data.error;
+
+                // Change response color depending on success or failure
+                if (data.message) {
+                    messageElement.className = 'success'; // Apply success class
+                } else {
+                    messageElement.className = 'error'; // Apply error class
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+{% endblock %}
