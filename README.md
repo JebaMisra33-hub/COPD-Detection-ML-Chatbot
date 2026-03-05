@@ -1,15 +1,28 @@
-Overview :
-Chronic Obstructive Pulmonary Disease (COPD) is a major global health concern, projected to be the 3rd leading cause of death by 2030. This project provides a digital health solution for early detection by analyzing lung sound recordings. The system integrates deep learning for diagnosis with a web-based platform for patient-doctor interaction.
+# COPD Prediction using ML
 
-Key Features:
-AI Diagnosis: Users can upload breathing sound files for automated COPD risk prediction.
-Deep Learning Engine: Utilizes CNN (Convolutional Neural Networks) and LSTM (Long Short-Term Memory) models to process audio patterns.
-AI Chatbot: An integrated assistant to answer user queries regarding symptoms, prevention, and general COPD information.
-Doctor Appointment System: A location-based search allows users to find and schedule appointments with nearby medical professionals.
-Dual-Module Architecture: Features a dedicated Admin Module for data management and a User Module for personal health tracking.
+This repository contains the Machine Learning core of the COPD Prediction system. My role focused on the implementation of hybrid Deep Learning architectures for respiratory disease classification.
 
-Tech Stack:
-Backend: Python (Django Framework)
-Frontend: HTML, CSS, Bootstrap
-Database: SQLite3
-Machine Learning: CNN, LSTM (Deep Learning
+# My Core Contributions (ML & Data Analysis)
+* Deep Learning Architecture: Designed and trained a Hybrid CNN + LSTM model:
+    * CNN Layer: For spatial feature extraction from spectrograms.
+    * LSTM Layer: To capture temporal dependencies in breathing cycles.
+* Feature Engineering: Performed Exploratory Data Analysis (EDA) to isolate specific frequency ranges that differentiate healthy breathing from COPD patterns.
+* Model Optimization: Achieved high precision by tuning hyperparameters and addressing class imbalance in the respiratory dataset.
+
+# Tech Stack (ML Specialist)
+* Programming: Python
+* Deep Learning Frameworks: TensorFlow / Keras
+* Audio Analytics: Librosa
+* Data Science Libraries: NumPy, Pandas, Matplotlib, Seaborn
+* Environment: Jupyter Notebook / Google Colab
+
+# The Pipeline Developed
+1. Extraction: Loading raw '.wav' files.
+2. Transformation: Applying Short-Time Fourier Transform (STFT) to create Mel-spectrograms.
+3. Normalization: Using NumPy to scale data into tensors ready for the Neural Network.
+4. Classification: Passing data through the CNN+LSTM layers to output a probability score.
+
+# Evaluation Metrics
+* Focused on Recall and ROC-AUC scores, as missing a positive COPD case (False Negative) is critical in medical diagnostics.
+
+[Dashboard Screenshot] - 
