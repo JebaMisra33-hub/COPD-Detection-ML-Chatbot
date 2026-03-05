@@ -25,4 +25,4 @@ This repository contains the Machine Learning core of the COPD Prediction system
 # Evaluation Metrics
 * Focused on Recall and ROC-AUC scores, as missing a positive COPD case (False Negative) is critical in medical diagnostics.
 
-[Dashboard Screenshot] - 
+[Dashboard Screenshot] - https://github.com/JebaMisra33-hub/COPD-Detection-ML-Chatbot/blob/main/ouyput_1.jpeg?raw=true
